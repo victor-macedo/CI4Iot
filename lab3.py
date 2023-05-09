@@ -20,24 +20,37 @@ def find_out(df,coluna,k):      #Funcao para detetar os outliners, retorna vetor
 def remove_out(df,coluna,k):    #Funcao para remover os outliners
     out = find_out(df,coluna,k)
     for i in out:
-        df = df.drop(df.index[i])
+        df = df.drop(i)
     return df
 
 def previous_out(df,coluna,k):    #Funcao para substituir o outliner pelo valor anterior
     out = find_out(df,coluna,k)
     for i in out:
+        i += 1
         df[coluna][i] = df[coluna][i-1]
     return df
 
 def interpolation_out(df,coluna,k):    #Funcao para substituir o outliner pelo valor interpolado
     out = find_out(df,coluna,k)
     for i in out:
+        if i < 1:
+            i = 1
+        elif i > 1271:
+            i = 1271
         df[coluna][i] = (df[coluna][i+1] + df[coluna][i-1])/2
     return df
 
-df = pd.read_csv('../CI4Iot/Lab3_DataSets/EURUSD_Daily_Ask_2018.12.31_2019.10.05v2.csv')
-df["DATE"] = pd.to_datetime(df["Time (UTC)"])
+df = pd.read_csv('../CI4Iot/Lab3_DataSets/DCOILBRENTEUv2.csv')
+#df = pd.read_csv('../CI4Iot/Lab3_DataSets/EURUSD_Daily_Ask_2018.12.31_2019.10.05v2.csv')
 #plt.plot(df)
-df = interpolation_out(df,"High",0.6)
-plt.plot(df["DATE"],df["High"])
+coluna = "DCOILBRENTEU"
+#df = interpolation_out(df,coluna,0.6)
+
+for i in range (1, len(df.index)):
+    df["var_prev"] = df[coluna][i] - df[coluna][i-1]
+
+print(df)
+plt.hist(df["var_prev"])
+
+
 plt.show()
