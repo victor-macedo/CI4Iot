@@ -40,7 +40,7 @@ def interpolation_out(df,coluna,k):    #Funcao para substituir o outliner pelo v
         df[coluna][i] = (df[coluna][i+1] + df[coluna][i-1])/2
     return df
 
-df = pd.read_csv('../CI4Iot/Lab3_DataSets/DCOILBRENTEUv2.csv')
+df = pd.read_csv('../CI4Iot/Lab3/Lab3_DataSets/DCOILBRENTEUv2.csv')
 #df = pd.read_csv('../CI4Iot/Lab3_DataSets/EURUSD_Daily_Ask_2018.12.31_2019.10.05v2.csv')
 #plt.plot(df)
 coluna = "DCOILBRENTEU"
@@ -51,6 +51,5 @@ for i in range (1, len(df.index)):
 
 print(df)
 plt.hist(df["var_prev"])
-
 
 plt.show()
