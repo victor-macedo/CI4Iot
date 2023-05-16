@@ -20,15 +20,11 @@ for i in range (0, len(df.index)):
     elif df["Species"][i] == "Iris-virginica":
         df["Species"][i] = 2
 
-print(df.loc[:,"Species"])
-
 X_train ,X_test, Y_train, Y_test = sk.train_test_split(df.loc[:,['Sepal_Length','Sepal_Width','Petal_Length','Petal_Width']],
                                                        df.loc[:,['Species']],train_size= 0.66, random_state=42)
 
 rede = LinearRegression().fit(X_train, Y_train)
-n=1
+
 rede.predict(X_test)
-print("Respota é:", Y_test)
-
-
+print(rede.score(X_test,Y_test))
 
