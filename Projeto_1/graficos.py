@@ -43,7 +43,7 @@ def interpolation_out(df,coluna,k):    #Funcao para substituir o outliner pelo v
     return df
 
 
-df_original = pd.read_csv("Projeto 1/Dataset/Lab6-Proj1_Dataset.csv")
+df_original = pd.read_csv("../CI4Iot/Projeto_1/Dataset/Lab6-Proj1_Dataset.csv")
 k = 0.5
 for colunas in df_original.columns:
     df = previous_out(df_original, colunas, k)

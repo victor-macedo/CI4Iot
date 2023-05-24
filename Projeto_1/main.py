@@ -5,6 +5,7 @@ import pandas as pd
 import sklearn.model_selection as sk
 from sklearn import svm
 from sklearn.neural_network import MLPRegressor
+from sklearn import preprocessing
 
 def find_out(df, coluna, k):      # Funcao para detetar os outliners, retorna vetor com os index outliners
     u = 0
@@ -45,6 +46,18 @@ def interpolation_out(df,coluna,k):    #Funcao para substituir o outliner pelo v
         df[coluna][i] = (df[coluna][i+1] + df[coluna][i-1])/2
     return df
 
+def plot_dados(df):
+    n=0
+    coluna = df_original.columns
+    fig, axs = plt.subplots(len(coluna))
+    fig.suptitle('Dataset')
+    for i in coluna:
+        axs[n].plot(df.loc[:,i])
+        axs[n].set_title(i)
+        n += 1
+
+    print(len(df.index))
+    plt.show()
 
 df_original = pd.read_csv("../CI4Iot/Projeto_1/Dataset/Lab6-Proj1_Dataset.csv")
 
@@ -54,14 +67,21 @@ df_original = pd.read_csv("../CI4Iot/Projeto_1/Dataset/Lab6-Proj1_Dataset.csv")
 k = 0.5
 for colunas in df_original.columns:
     df = interpolation_out(df_original, colunas, k)
+##Loop para normalizar os dados
+for colunas in df_original.columns:
+    df[colunas] = (df[colunas] -  df[colunas].min()) / (df[colunas].max() - df[colunas].min()) 
+    #df[colunas] = df[colunas] - df[colunas].mean() / df[colunas].std()
 
+#plot_dados(df)
 ##Divisão do Dataset 
 #Train de 72%, test de 20% e validation de 8%
 X_train ,X_test, Y_train, Y_test = sk.train_test_split(df.loc[:,[df.columns[0],df.columns[1],df.columns[2],df.columns[3],
                                                                      df.columns[4]]],df.loc[:,df.columns[5]],test_size= 0.28, random_state=42)
-X_test ,X_val, Y_test, Y_val = sk.train_test_split(X_test,Y_test,test_size= 0.08, random_state=42)
+X_test ,X_val, Y_test, Y_val = sk.train_test_split(X_test,Y_test,test_size= 0.28, random_state=42)
 
 
-rede = MLPRegressor(random_state=1,activation='tanh',solver ='adam', max_iter=1000).fit(X_train, Y_train)
-print(rede.score(X_train,Y_train))
+rede = MLPRegressor(random_state=1,activation='identity',solver ='lbfgs', max_iter=10000).fit(X_train, Y_train)
+
+print("Accuracy test: ", rede.score(X_test,Y_test))
+print("Accuracy validation: ", rede.score(X_val,Y_val))
 
