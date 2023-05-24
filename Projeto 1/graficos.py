@@ -1,10 +1,7 @@
 import numpy as np
-import seaborn as sn
+import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
-import sklearn.model_selection as sk
-from sklearn import svm
-from sklearn.neural_network import MLPRegressor
 
 def find_out(df, coluna, k):      # Funcao para detetar os outliners, retorna vetor com os index outliners
     u = 0
@@ -47,21 +44,20 @@ def interpolation_out(df,coluna,k):    #Funcao para substituir o outliner pelo v
 
 
 df_original = pd.read_csv("Projeto 1/Dataset/Lab6-Proj1_Dataset.csv")
-
-#colunas = ['Anchor_Ratio', 'Transmission_Range', 'Node_Density', 'Step_Size', 'Iterations', 'ESLE']
-###Pré processamento do dataset
-## Loop para remover os outliers do dataset
 k = 0.5
 for colunas in df_original.columns:
-    df = interpolation_out(df_original, colunas, k)
-
-##Divisão do Dataset 
-#Train de 72%, test de 20% e validation de 8%
-X_train ,X_test, Y_train, Y_test = sk.train_test_split(df.loc[:,[df.columns[0],df.columns[1],df.columns[2],df.columns[3],
-                                                                     df.columns[4]]],df.loc[:,df.columns[5]],test_size= 0.28, random_state=42)
-X_test ,X_val, Y_test, Y_val = sk.train_test_split(X_test,Y_test,test_size= 0.08, random_state=42)
-
-
-rede = MLPRegressor(random_state=1,activation='tanh',solver ='adam', max_iter=1000).fit(X_train, Y_train)
-print(rede.score(X_train,Y_train))
+    df = previous_out(df_original, colunas, k)
+#colunas = ['Anchor_Ratio', 'Transmission_Range', 'Node_Density', 'Step_Size', 'Iterations', 'ESLE']
+#sns.relplot(df, x = 'Anchor_Ratio', y = 'Transmission_Range', hue = 'Node_Density',
+#             style='Step_Size', size = "Iterations")
+fig, axs = plt.subplots(6)
+fig.suptitle('Dataset')
+axs[0].plot(df.loc[:,"Anchor_Ratio"])
+axs[1].plot(df.loc[:,"Transmission_Range"])
+axs[2].plot(df.loc[:,"Node_Density"])
+axs[3].plot(df.loc[:,"Step_Size"])
+axs[4].plot(df.loc[:,"Iterations"])
+axs[5].plot(df.loc[:,"ESLE"])
+print(len(df.index))
+plt.show()
 
