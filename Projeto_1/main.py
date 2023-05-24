@@ -40,13 +40,13 @@ def interpolation_out(df,coluna,k):    #Funcao para substituir o outliner pelo v
     for i in out:
         if i < 1:
             i = 1
-        elif i > len(df.index)-2:
+        elif i > len(df.index)-2:   
             i = len(df.index)-2
         df[coluna][i] = (df[coluna][i+1] + df[coluna][i-1])/2
     return df
 
 
-df_original = pd.read_csv("Projeto 1/Dataset/Lab6-Proj1_Dataset.csv")
+df_original = pd.read_csv("../CI4Iot/Projeto_1/Dataset/Lab6-Proj1_Dataset.csv")
 
 #colunas = ['Anchor_Ratio', 'Transmission_Range', 'Node_Density', 'Step_Size', 'Iterations', 'ESLE']
 ###Pré processamento do dataset
