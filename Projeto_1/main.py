@@ -1,12 +1,11 @@
 import numpy as np
-import seaborn as sn
 import matplotlib.pyplot as plt
 import pandas as pd
 import sklearn.model_selection as sk
-from sklearn import svm
+#from sklearn import svm
 from sklearn import metrics
 from sklearn.neural_network import MLPRegressor
-from sklearn import preprocessing
+#from sklearn import preprocessing
 import pickle
 from joblib import dump
 
@@ -67,7 +66,7 @@ def plot_dados(df):
     plt.show()
 
 
-df_original = pd.read_csv("Dataset/Lab6-Proj1_Dataset.csv")
+df_original = pd.read_csv("../CI4Iot/Projeto_1/Dataset/Lab6-Proj1_Dataset.csv")
 
 
 # colunas = ['Anchor_Ratio', 'Transmission_Range', 'Node_Density', 'Step_Size', 'Iterations', 'ESLE']
