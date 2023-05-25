@@ -7,6 +7,9 @@ from sklearn import svm
 from sklearn import metrics
 from sklearn.neural_network import MLPRegressor
 from sklearn import preprocessing
+import pickle
+from joblib import dump
+
 
 def find_out(df, coluna, k):      # Funcao para detetar os outliners, retorna vetor com os index outliners
     u = 0
@@ -30,14 +33,16 @@ def remove_out(df, coluna, k):     # Funcao para remover os outliners
         df = df.drop(i)
     return df
 
-def previous_out(df,coluna,k):    #Funcao para substituir o outliner pelo valor anterior
+
+def previous_out(df,coluna,k):    # Funcao para substituir o outliner pelo valor anterior
     out = find_out(df,coluna,k)
     for i in out:
         i += 1
         df[coluna][i] = df[coluna][i-1]
     return df
 
-def interpolation_out(df,coluna,k):    #Funcao para substituir o outliner pelo valor interpolado
+
+def interpolation_out(df,coluna,k):    # Funcao para substituir o outliner pelo valor interpolado
     out = find_out(df,coluna,k)
     for i in out:
         if i < 1:
@@ -46,6 +51,7 @@ def interpolation_out(df,coluna,k):    #Funcao para substituir o outliner pelo v
             i = len(df.index)-2
         df[coluna][i] = (df[coluna][i+1] + df[coluna][i-1])/2
     return df
+
 
 def plot_dados(df):
     n=0
@@ -60,10 +66,12 @@ def plot_dados(df):
     print(len(df.index))
     plt.show()
 
-df_original = pd.read_csv("../CI4Iot/Projeto_1/Dataset/Lab6-Proj1_Dataset.csv")
 
-#colunas = ['Anchor_Ratio', 'Transmission_Range', 'Node_Density', 'Step_Size', 'Iterations', 'ESLE']
-###Pré processamento do dataset
+df_original = pd.read_csv("Dataset/Lab6-Proj1_Dataset.csv")
+
+
+# colunas = ['Anchor_Ratio', 'Transmission_Range', 'Node_Density', 'Step_Size', 'Iterations', 'ESLE']
+### Pré processamento do dataset
 ## Loop para remover os outliers do dataset
 k = 0.5
 for colunas in df_original.columns:
@@ -81,11 +89,13 @@ X_train ,X_test, Y_train, Y_test = sk.train_test_split(df.loc[:,[df.columns[0],d
 X_test ,X_val, Y_test, Y_val = sk.train_test_split(X_test,Y_test,test_size= 0.28, random_state=42)
 
 
-rede = MLPRegressor(random_state=1,hidden_layer_sizes=(100,),activation='identity',solver ='lbfgs',learning_rate = 'adaptive', max_iter=10000).fit(X_train, Y_train)
+rede = MLPRegressor(random_state=1,hidden_layer_sizes=(10,),activation='identity',solver ='lbfgs',learning_rate = 'adaptive', max_iter=10000).fit(X_train, Y_train)
 
+save = pickle.dumps(rede)
+dump(rede, 'rede.joblib')
 print("Accuracy test: ", rede.score(X_test,Y_test))
 print("Accuracy validation: ", rede.score(X_val,Y_val))
 
 Y_pred = rede.predict(X_val)
 
-print("MSE: ", metrics.mean_squared_error(Y_val,Y_pred))
+print("RMSE: ", np.sqrt(metrics.mean_squared_error(Y_val,Y_pred)))
