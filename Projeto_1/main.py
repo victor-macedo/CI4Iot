@@ -2,12 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import sklearn.model_selection as sk
-#from sklearn import svm
 from sklearn import metrics
 from sklearn.neural_network import MLPRegressor
-#from sklearn import preprocessing
 import pickle
 from joblib import dump
+import math
 
 
 def find_out(df, coluna, k):      # Funcao para detetar os outliners, retorna vetor com os index outliners
@@ -36,8 +35,10 @@ def remove_out(df, coluna, k):     # Funcao para remover os outliners
 def previous_out(df,coluna,k):    # Funcao para substituir o outliner pelo valor anterior
     out = find_out(df,coluna,k)
     for i in out:
-        i += 1
-        df[coluna][i] = df[coluna][i-1]
+        if i != 0:          
+            df[coluna][i] = df[coluna][i-1]
+        #else:
+         #   df[coluna][i] = df[coluna][i+1]
     return df
 
 
@@ -52,15 +53,20 @@ def interpolation_out(df,coluna,k):    # Funcao para substituir o outliner pelo 
     return df
 
 
-def plot_dados(df):
+def plot_dados(df,col):
     n=0
+    l=0
     coluna = df_original.columns
-    fig, axs = plt.subplots(len(coluna))
+    fig, axs = plt.subplots(int(math.ceil(len(coluna)/col)),col)
     fig.suptitle('Dataset')
     for i in coluna:
-        axs[n].plot(df.loc[:,i])
-        axs[n].set_title(i)
-        n += 1
+        axs[n,l].plot(df.loc[:,i])
+        axs[n,l].set_title(i)
+        if n == (len(coluna)/col - 1):
+            n = 0
+            l += 1
+        else:
+            n += 1
 
     print(len(df.index))
     plt.show()
@@ -68,24 +74,26 @@ def plot_dados(df):
 
 df_original = pd.read_csv("../CI4Iot/Projeto_1/Dataset/Lab6-Proj1_Dataset.csv")
 
-
 # colunas = ['Anchor_Ratio', 'Transmission_Range', 'Node_Density', 'Step_Size', 'Iterations', 'ESLE']
 ### Pré processamento do dataset
 ## Loop para remover os outliers do dataset
-k = 0.5
+k = 1.5
 for colunas in df_original.columns:
     df = interpolation_out(df_original, colunas, k)
-##Loop para normalizar os dados
-for colunas in df_original.columns:
-    df[colunas] = (df[colunas] -  df[colunas].min()) / (df[colunas].max() - df[colunas].min()) 
-    #df[colunas] = df[colunas] - df[colunas].mean() / df[colunas].std()
 
-#plot_dados(df)
+#plot_dados(df,2)
+##Loop para padronizar os dados
+for colunas in df_original.columns:
+    df[colunas] = (df[colunas] -  df[colunas].min()) / (df[colunas].max() - df[colunas].min()) #Normalização
+    #df[colunas] = df[colunas] - df[colunas].mean() / df[colunas].std()  #Z-score
+
+#plot_dados(df,2)
+
 ##Divisão do Dataset 
 #Train de 72%, test de 20% e validation de 8%
 X_train ,X_test, Y_train, Y_test = sk.train_test_split(df.loc[:,[df.columns[0],df.columns[1],df.columns[2],df.columns[3],
-                                                                     df.columns[4]]],df.loc[:,df.columns[5]],test_size= 0.28, random_state=42)
-X_test ,X_val, Y_test, Y_val = sk.train_test_split(X_test,Y_test,test_size= 0.28, random_state=42)
+                                                                     df.columns[4]]],df.loc[:,df.columns[5]],test_size= 0.4, random_state=42)
+X_test ,X_val, Y_test, Y_val = sk.train_test_split(X_test,Y_test,test_size= 0.5, random_state=42)
 
 
 rede = MLPRegressor(random_state=1,hidden_layer_sizes=(10,),activation='identity',solver ='lbfgs',learning_rate = 'adaptive', max_iter=10000).fit(X_train, Y_train)

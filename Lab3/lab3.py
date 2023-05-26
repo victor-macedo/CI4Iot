@@ -44,7 +44,7 @@ df = pd.read_csv('../CI4Iot/Lab3/Lab3_DataSets/DCOILBRENTEUv2.csv')
 #df = pd.read_csv('../CI4Iot/Lab3_DataSets/EURUSD_Daily_Ask_2018.12.31_2019.10.05v2.csv')
 #plt.plot(df)
 coluna = "DCOILBRENTEU"
-#df = interpolation_out(df,coluna,0.6)
+df = previous_out(df,coluna,0.6)
 df["var_prev"] = df[coluna][1] - df[coluna][0] 
 for i in range (1, len(df.index)):
     df["var_prev"][i] = df[coluna][i] - df[coluna][i-1]
