@@ -92,7 +92,7 @@ for colunas in df_original.columns:
 ##Divisão do Dataset 
 #Train de 72%, test de 20% e validation de 8%
 X_train ,X_test, Y_train, Y_test = sk.train_test_split(df.loc[:,[df.columns[0],df.columns[1],df.columns[2],df.columns[3],
-                                                                     df.columns[4]]],df.loc[:,df.columns[5]],test_size= 0.4, random_state=42)
+                                                                     df.columns[4]]],df.loc[:,df.columns[5]],test_size= 0.2, random_state=42)
 X_test ,X_val, Y_test, Y_val = sk.train_test_split(X_test,Y_test,test_size= 0.5, random_state=42)
 
 
