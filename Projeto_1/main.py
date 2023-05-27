@@ -96,7 +96,7 @@ X_train ,X_test, Y_train, Y_test = sk.train_test_split(df.loc[:,[df.columns[0],d
 X_test ,X_val, Y_test, Y_val = sk.train_test_split(X_test,Y_test,test_size= 0.5, random_state=42)
 
 
-rede = MLPRegressor(random_state=1,hidden_layer_sizes=(10,),activation='identity',solver ='lbfgs',learning_rate = 'adaptive', max_iter=10000).fit(X_train, Y_train)
+rede = MLPRegressor(random_state=1,hidden_layer_sizes=(10,),activation='relu',solver ='lbfgs',learning_rate = 'invscaling', max_iter=10000).fit(X_train, Y_train)
 
 save = pickle.dumps(rede)
 dump(rede, 'rede.joblib')

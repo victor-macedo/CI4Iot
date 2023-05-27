@@ -1,16 +1,17 @@
 ##Algoritimo para teste da rede
 import numpy as np
-import sklearn.model_selection as sk
-from sklearn import metrics
 import pandas as pd
+import sklearn.model_selection as sk
 from joblib import load
+from sklearn import metrics
+
 
 def find_out(df, coluna, k):      # Funcao para detetar os outliners, retorna vetor com os index outliners
     u = 0
     v = 0
     out = []            # Vetor com os index outliners
     for i in range(0, len(df.index)):
-        u += df[coluna][i]     # Calculo da média
+        u += df[coluna][i]     # Calculo da media
     u = u/len(df.index)
     for i in range(0, len(df.index)):
         v += (df[coluna][i]-u)**2           # Calculo da somatoria da variancia
@@ -35,7 +36,7 @@ def interpolation_out(df,coluna,k):    # Funcao para substituir o outliner pelo 
 
 df_original = pd.read_csv("../CI4Iot/Projeto_1/Dataset/Lab6-Proj1_TestSet.csv")
 
-### Pré processamento do dataset
+### Pre processamento do dataset
 ## Loop para remover os outliers do dataset
 k = 0.5
 for colunas in df_original.columns:
