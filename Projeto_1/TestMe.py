@@ -34,11 +34,11 @@ def interpolation_out(df,coluna,k):    # Funcao para substituir o outliner pelo 
     return df
 
 
-df_original = pd.read_csv("../CI4Iot/Projeto_1/Dataset/Lab6-Proj1_TestSet.csv")
+df_original = pd.read_csv("Projeto_1/Dataset/Lab6-Proj1_Dataset.csv")
 
 ### Pre processamento do dataset
 ## Loop para remover os outliers do dataset
-k = 0.5
+k = 1.5
 for colunas in df_original.columns:
     df = interpolation_out(df_original, colunas, k)
 ##Loop para normalizar os dados

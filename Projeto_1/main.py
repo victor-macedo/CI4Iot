@@ -106,4 +106,3 @@ print("Accuracy validation: ", rede.score(X_val,Y_val))
 Y_pred = rede.predict(X_val)
 
 print("RMSE: ", np.sqrt(metrics.mean_squared_error(Y_val,Y_pred)))
-print("RMSE Maps: ", np.sqrt(metrics.mean_squared_error(Y_pred+20,Y_pred)))
