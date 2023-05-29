@@ -1,12 +1,13 @@
+import math
+import pickle
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
 import sklearn.model_selection as sk
+from joblib import dump
 from sklearn import metrics
 from sklearn.neural_network import MLPRegressor
-import pickle
-from joblib import dump
-import math
+
 
 
 def find_out(df, coluna, k):      # Funcao para detetar os outliners, retorna vetor com os index outliners
@@ -14,7 +15,7 @@ def find_out(df, coluna, k):      # Funcao para detetar os outliners, retorna ve
     v = 0
     out = []            # Vetor com os index outliners
     for i in range(0, len(df.index)):
-        u += df[coluna][i]     # Calculo da média
+        u += df[coluna][i]     # Calculo da media
     u = u/len(df.index)
     for i in range(0, len(df.index)):
         v += (df[coluna][i]-u)**2           # Calculo da somatoria da variancia
@@ -74,29 +75,28 @@ def plot_dados(df,col):
 
 df_original = pd.read_csv("../CI4Iot/Projeto_1/Dataset/Lab6-Proj1_Dataset.csv")
 
-# colunas = ['Anchor_Ratio', 'Transmission_Range', 'Node_Density', 'Step_Size', 'Iterations', 'ESLE']
-### Pré processamento do dataset
+### Pre processamento do dataset
 ## Loop para remover os outliers do dataset
 k = 1.5
 for colunas in df_original.columns:
     df = interpolation_out(df_original, colunas, k)
 
-#plot_dados(df,2)
+
 ##Loop para padronizar os dados
 for colunas in df_original.columns:
-    df[colunas] = (df[colunas] -  df[colunas].min()) / (df[colunas].max() - df[colunas].min()) #Normalização
+    df[colunas] = (df[colunas] -  df[colunas].min()) / (df[colunas].max() - df[colunas].min()) #Normalizacao
     #df[colunas] = df[colunas] - df[colunas].mean() / df[colunas].std()  #Z-score
 
-#plot_dados(df,2)
 
-##Divisão do Dataset 
-#Train de 72%, test de 20% e validation de 8%
+
+##Divisao do Dataset 
+#Train de 80%, test de 10% e validation de 10%
 X_train ,X_test, Y_train, Y_test = sk.train_test_split(df.loc[:,[df.columns[0],df.columns[1],df.columns[2],df.columns[3],
                                                                      df.columns[4]]],df.loc[:,df.columns[5]],test_size= 0.2, random_state=42)
 X_test ,X_val, Y_test, Y_val = sk.train_test_split(X_test,Y_test,test_size= 0.5, random_state=42)
 
 
-rede = MLPRegressor(random_state=1,hidden_layer_sizes=(10,),activation='relu',solver ='lbfgs',learning_rate = 'invscaling', max_iter=10000).fit(X_train, Y_train)
+rede = MLPRegressor(random_state=1,hidden_layer_sizes=(10,),activation='relu',solver ='lbfgs',learning_rate = 'adaptive', max_iter=10000).fit(X_train, Y_train)
 
 save = pickle.dumps(rede)
 dump(rede, 'rede.joblib')
@@ -106,3 +106,4 @@ print("Accuracy validation: ", rede.score(X_val,Y_val))
 Y_pred = rede.predict(X_val)
 
 print("RMSE: ", np.sqrt(metrics.mean_squared_error(Y_val,Y_pred)))
+print("RMSE Maps: ", np.sqrt(metrics.mean_squared_error(Y_pred+20,Y_pred)))
