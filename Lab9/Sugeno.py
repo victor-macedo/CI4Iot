@@ -5,15 +5,15 @@ from simpful import *
 FS = FuzzySystem()
 
 # Define fuzzy sets and linguistic variables
-S_1 = FuzzySet(points=[[0., 1.],  [50., 0.]], term="Low")
-S_2 = FuzzySet(points=[[0., 0.], [30., 0], [50., 1.], [70., 0.]], term="Normal")
-S_3 = FuzzySet(points=[[50., 0.],  [100., 1.]], term="Turbo")
+S_1 = FuzzySet(points=[[0., 1.],  [50., 0.]], term="low")
+S_2 = FuzzySet(points=[[0., 0.], [30., 0], [50., 1.], [70., 0.]], term="normal")
+S_3 = FuzzySet(points=[[50., 0.],  [100., 1.]], term="turbo")
 FS.add_linguistic_variable("CPU", LinguisticVariable([S_1, S_2, S_3], concept="CPU Speed"))
 
 F_1 = FuzzySet(points=[[0., 1.],  [50., 0.]], term="cold")
 F_2 = FuzzySet(points=[[0., 0.], [30., 0], [50., 1.], [70., 0.]], term="warm")
 F_3 = FuzzySet(points=[[0., 0.], [50., 0.],  [100., 1.]], term="hot")
-FS.add_linguistic_variable("Core", LinguisticVariable([F_1, F_2], concept="Core Temp"))
+FS.add_linguistic_variable("Core", LinguisticVariable([F_1, F_2,F_3], concept="Core Temp"))
 
 # Define output crisp values
 FS.set_crisp_output_value("slow", 3500)
@@ -37,4 +37,4 @@ FS.set_variable("Core", 20)
 FS.set_variable("CPU", 3)
 
 # Perform Sugeno inference and print output
-print(FS.Sugeno_inference(["Tip"]))
+print(FS.Sugeno_inference(["Fan_speed"]))
