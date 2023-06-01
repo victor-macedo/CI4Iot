@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import sklearn.model_selection as sk
+from simpful import *
 from joblib import dump
 from sklearn import metrics
 from sklearn.neural_network import MLPRegressor
@@ -89,20 +90,43 @@ for colunas in df_original.columns:
 
 
 
-##Divisao do Dataset 
-#Train de 80%, test de 10% e validation de 10%
-X_train ,X_test, Y_train, Y_test = sk.train_test_split(df.loc[:,[df.columns[0],df.columns[1],df.columns[2],df.columns[3],
-                                                                     df.columns[4]]],df.loc[:,df.columns[5]],test_size= 0.2, random_state=42)
-X_test ,X_val, Y_test, Y_val = sk.train_test_split(X_test,Y_test,test_size= 0.5, random_state=42)
 
+# A simple fuzzy inference system for the tipping problem
+# Create a fuzzy system object
+FS_N = FuzzySystem()
 
-rede = MLPRegressor(random_state=1,hidden_layer_sizes=(10,),activation='relu',solver ='lbfgs',learning_rate = 'adaptive', max_iter=10000).fit(X_train, Y_train)
+# Define fuzzy sets and linguistic variables
+S_1 = FuzzySet(function=Triangular_MF(a=0, b=0, c=0.5), term="low")
+S_2 = FuzzySet(function=Triangular_MF(a=0, b=0.5, c=1), term="normal")
+S_3 = FuzzySet(function=Triangular_MF(a=0.5, b=1, c=1), term="high")
+FS_N.add_linguistic_variable("Memory", LinguisticVariable([S_1, S_2, S_3], concept="Memory usage", universe_of_discourse=[0,1]))
 
-save = pickle.dumps(rede)
-dump(rede, 'rede.joblib')
-print("Accuracy test: ", rede.score(X_test,Y_test))
-print("Accuracy validation: ", rede.score(X_val,Y_val))
+F_1 = FuzzySet(function=Triangular_MF(a=0, b=0, c=0.5), term="low")
+F_2 = FuzzySet(function=Triangular_MF(a=0, b=0.5, c=1), term="normal")
+F_3 = FuzzySet(function=Triangular_MF(a=0.5, b=1, c=1), term="high")
+FS_N.add_linguistic_variable("Processor", LinguisticVariable([F_1, F_2,F_3], concept="Processor load", universe_of_discourse=[0,1]))
 
-Y_pred = rede.predict(X_val)
+# Define output fuzzy sets and linguistic variable
+T_1 = FuzzySet(function=Triangular_MF(a=0, b=0, c=0.5), term="low")
+T_2 = FuzzySet(function=Triangular_MF(a=0, b=0.5, c=1), term="normal")
+T_3 = FuzzySet(function=Triangular_MF(a=0.5, b=1, c=1), term="high")
+FS_N.add_linguistic_variable("Load", LinguisticVariable([T_1, T_2, T_3], universe_of_discourse=[0,1]))
 
-print("RMSE: ", np.sqrt(metrics.mean_squared_error(Y_val,Y_pred)))
+# Define fuzzy rules
+R1 = "IF (Memory IS low) AND (Processor IS low) THEN (Load IS low)"
+R2 = "IF (Memory IS low) AND (Processor IS normal) THEN (Load IS low)"
+R3 = "IF (Memory IS low) AND (Processor IS high) THEN (Load IS normal)"
+R4 = "IF (Memory IS normal) AND (Processor IS low) THEN (Load IS low)"
+R5 = "IF (Memory IS normal) AND (Processor IS normal) THEN (Load IS normal)"
+R6 = "IF (Memory IS normal) AND (Processor IS high) THEN (Load IS fast)"
+R7 = "IF (Memory IS high) AND (Processor IS low) THEN (Load IS normal)"
+R8 = "IF (Memory IS high) AND (Processor IS normal) THEN (Load IS fast)"
+R9 = "IF (Memory IS high) AND (Processor IS high) THEN (Load IS fast)"
+FS_N.add_rules([R1, R2, R3, R4, R5, R6, R7, R8, R9])
+
+# Set antecedents values
+FS_N.set_variable("Memory", 0.4)
+FS_N.set_variable("Processor", 0.8)
+
+# Perform Mamdani inference and print output
+print(FS_N.Mamdani_inference(["Load"]))
