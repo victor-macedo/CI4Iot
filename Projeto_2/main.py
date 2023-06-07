@@ -9,7 +9,6 @@ from sklearn import metrics
 from sklearn.neural_network import MLPRegressor
 
 
-
 def find_out(df, coluna, k):      # Funcao para detetar os outliners, retorna vetor com os index outliners
     u = 0
     v = 0
