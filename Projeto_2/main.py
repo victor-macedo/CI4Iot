@@ -73,17 +73,17 @@ def plot_dados(df,col):
     plt.show()
 
 
-df_original = pd.read_csv("../CI4Iot/Projeto_1/Dataset/Lab6-Proj1_Dataset.csv")
+df = pd.read_csv("../CI4Iot/Projeto_2/Project2_SampleData.csv")
 
 ### Pre processamento do dataset
 ## Loop para remover os outliers do dataset
-k = 1.5
-for colunas in df_original.columns:
-    df = interpolation_out(df_original, colunas, k)
+#k = 1.5
+#for colunas in df_original.columns:
+#    df = interpolation_out(df_original, colunas, k)
 
 
 ##Loop para padronizar os dados
-for colunas in df_original.columns:
+for colunas in df.columns:
     df[colunas] = (df[colunas] -  df[colunas].min()) / (df[colunas].max() - df[colunas].min()) #Normalizacao
     #df[colunas] = df[colunas] - df[colunas].mean() / df[colunas].std()  #Z-score
 
@@ -256,11 +256,12 @@ R_F24 = "IF (Network IS very_high) AND (Load IS very_high) THEN (Result IS very_
 R_F25 = "IF (Network IS very_high) AND (Load IS very_high) THEN (Result IS very_high)"
 FS_F.add_rules([ R_F1, R_F2, R_F3, R_F4, R_F5, R_F6, R_F7, R_F8, R_F9, R_F10, R_F11, R_F12, R_F13, R_F14, R_F15, R_F16, R_F17 ,R_F18, R_F19, R_F20, R_F21, R_F22, R_F23, R_F24, R_F25 ])
 # Set antecedents values
-FS_N.set_variable("Latency", 0.2)
-FS_N.set_variable("Output", 0.3)
+n_teste = 2
+FS_N.set_variable("Latency", df['Latency'][n_teste])
+FS_N.set_variable("Output", df['OutNetThroughput'][n_teste])
 
-FS_L.set_variable("Memory", 0.2)
-FS_L.set_variable("Processor", 0.3)
+FS_L.set_variable("Memory", df['ProcessorLoad'][n_teste])
+FS_L.set_variable("Processor", df['MemoryUsage'][n_teste])
 
 FS_F.set_variable("Load", float(FS_L.Mamdani_inference(["Load"])["Load"]))
 FS_F.set_variable("Network", float(FS_N.Mamdani_inference(["Network"])["Network"]))
