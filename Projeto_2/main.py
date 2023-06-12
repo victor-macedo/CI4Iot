@@ -53,25 +53,6 @@ def interpolation_out(df,coluna,k):    # Funcao para substituir o outliner pelo 
     return df
 
 
-def plot_dados(df,col):
-    n=0
-    l=0
-    coluna = df_original.columns
-    fig, axs = plt.subplots(int(math.ceil(len(coluna)/col)),col)
-    fig.suptitle('Dataset')
-    for i in coluna:
-        axs[n,l].plot(df.loc[:,i])
-        axs[n,l].set_title(i)
-        if n == (len(coluna)/col - 1):
-            n = 0
-            l += 1
-        else:
-            n += 1
-
-    print(len(df.index))
-    plt.show()
-
-
 df = pd.read_csv("../CI4Iot/Projeto_2/Project2_SampleData.csv")
 
 ### Pre processamento do dataset
@@ -85,7 +66,6 @@ df = pd.read_csv("../CI4Iot/Projeto_2/Project2_SampleData.csv")
 for colunas in df.columns:
     df[colunas] = (df[colunas] -  df[colunas].min()) / (df[colunas].max() - df[colunas].min()) #Normalizacao
     #df[colunas] = df[colunas] - df[colunas].mean() / df[colunas].std()  #Z-score
-
 
 
 
@@ -219,12 +199,12 @@ H_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
 FS_F.add_linguistic_variable("Load", LinguisticVariable([H_1, H_2, H_3, H_4,H_5], concept="Load", universe_of_discourse=[0, 1]))
 
 # Define output fuzzy sets and linguistic variable
-J_1 = FuzzySet(function=Triangular_MF(a=0, b=0, c=0.25), term="very_low")
-J_2 = FuzzySet(function=Triangular_MF(a=0, b=0.25, c=0.5), term="low")
-J_3 = FuzzySet(function=Triangular_MF(a=0.25, b=0.5, c=0.75), term="normal")
-J_4 = FuzzySet(function=Triangular_MF(a=0.5, b=0.75, c=1), term="high")
-J_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
-FS_F.add_linguistic_variable("Result", LinguisticVariable([J_1, J_2, J_3,J_4,J_5], universe_of_discourse=[0, 1]))
+J_1 = FuzzySet(function=Triangular_MF(a=-1, b=-1, c=-0.5), term="very_low")
+J_2 = FuzzySet(function=Triangular_MF(a=-1, b=-0.5, c=0), term="low")
+J_3 = FuzzySet(function=Triangular_MF(a=-0.5, b=0, c=0.5), term="normal")
+J_4 = FuzzySet(function=Triangular_MF(a=0, b=0.5, c=1), term="high")
+J_5 = FuzzySet(function=Triangular_MF(a=0.5, b=1, c=1), term="very_high")
+FS_F.add_linguistic_variable("Result", LinguisticVariable([J_1, J_2, J_3,J_4,J_5], universe_of_discourse=[-1, 1]))
 
 # Define fuzzy rules
 
@@ -271,6 +251,7 @@ print(FS_L.Mamdani_inference(["Load"]))
 print(FS_N.Mamdani_inference(["Network"]))
 
 print(FS_F.Mamdani_inference(["Result"]))
+print("Resultado esperado: ", df['CLPVariation'][n_teste])
 
 
 
