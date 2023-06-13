@@ -18,7 +18,8 @@
 #    each of which can be 0 or 1
 
 import random
-
+import time
+import numpy as np
 from deap import base
 from deap import creator
 from deap import tools
@@ -38,21 +39,27 @@ toolbox.register("attr_bool", random.randint, 0, 1)
 # Structure initializers
 #                         define 'individual' to be an individual
 #                         consisting of 100 'attr_bool' elements ('genes')
-toolbox.register("individual", tools.initRepeat, creator.Individual, 
-    toolbox.attr_bool, 100)
+def generate(size, pmin, pmax):
+    Ind = creator.Individual(random.uniform(pmin, pmax) for _ in range(size)) 
+    return Ind
 
+toolbox.register("individual", generate, size=2, pmin=-6, pmax=6)
 # define the population to be a list of individuals
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
+
 # the goal ('fitness') function to be maximized
-def evalOneMax(individual):
-    return sum(individual),
+def eval(individual):
+    Z1 = np.sqrt(individual[0]**2 + individual[1]**2)
+    Z2 = np.sqrt((individual[0]-1)**2 + (individual[1]+1)**2)
+    f1 = (np.sin(4*Z1)/Z1 + np.sin(2.5*Z2)/Z2)
+    return f1, 
 
 #----------
 # Operator registration
 #----------
 # register the goal / fitness function
-toolbox.register("evaluate", evalOneMax)
+toolbox.register("evaluate", eval)
 
 # register the crossover operator
 toolbox.register("mate", tools.cxTwoPoint)
@@ -70,8 +77,6 @@ toolbox.register("select", tools.selTournament, tournsize=3)
 #----------
 
 def main():
-    random.seed(64)
-
     # create an initial population of 300 individuals (where
     # each individual is a list of integers)
     pop = toolbox.population(n=300)
@@ -80,7 +85,7 @@ def main():
     #       are crossed
     #
     # MUTPB is the probability for mutating an individual
-    CXPB, MUTPB = 0.5, 0.2
+    CXPB, MUTPB = 0.5, 0.3
 
     print("Start of evolution")
 
@@ -141,20 +146,18 @@ def main():
         # Gather all the fitnesses in one list and print the stats
         fits = [ind.fitness.values[0] for ind in pop]
 
-        length = len(pop)
-        mean = sum(fits) / length
-        sum2 = sum(x*x for x in fits)
-        std = abs(sum2 / length - mean**2)**0.5
-
-        print("  Min %s" % min(fits))
-        print("  Max %s" % max(fits))
-        print("  Avg %s" % mean)
-        print("  Std %s" % std)
-
+        best_ind = tools.selBest(pop, 1)[0]
+        print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
     print("-- End of (successful) evolution --")
 
-    best_ind = tools.selBest(pop, 1)[0]
-    print("Best individual is %s, %s" % (best_ind, best_ind.fitness.values))
-
 if __name__ == "__main__":
-    main()
+    tempos = []
+    for i in range (1):
+        start = time.time()
+        main()
+        end = time.time()
+        tempos.append(end-start)
+    print("Tempo de execução: ", sum(tempos)/len(tempos))
+    #Média de 1.4265921354293822s sem alteração
+    #Média de 1.686193084716797s aumentando as porcentagens de mutação e crossover
+    #Média  de 4.058953714370728s se dimininuir as porcentagens de mutação e crossover
