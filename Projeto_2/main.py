@@ -222,7 +222,7 @@ R_F25 = "IF (Network IS very_high) AND (Load IS very_high) THEN (Result IS very_
 FS_F.add_rules([ R_F1, R_F2, R_F3, R_F4, R_F5, R_F6, R_F7, R_F8, R_F9, R_F10, R_F11, R_F12, R_F13, R_F14, R_F15, R_F16, R_F17 ,R_F18, R_F19, R_F20, R_F21, R_F22, R_F23, R_F24, R_F25 ])
 # Set antecedents values
 n_teste = 9
-FS_N.set_variable("Latency", df['InpNetThroughput'][n_teste])
+FS_N.set_variable("Latency", df['Latency'][n_teste])
 FS_N.set_variable("Output", df['OutNetThroughput'][n_teste])
 
 FS_L.set_variable("Memory", df['ProcessorLoad'][n_teste])
