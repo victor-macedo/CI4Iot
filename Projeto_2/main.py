@@ -53,8 +53,8 @@ def interpolation_out(df,coluna,k):    # Funcao para substituir o outliner pelo 
     return df
 
 
-df = pd.read_csv("/Users/mac/Documents/GitHub/CI4Iot/Projeto_2/Project2_SampleData.csv")
-
+#df = pd.read_csv("/Users/mac/Documents/GitHub/CI4Iot/Projeto_2/Project2_SampleData.csv")
+df = pd.read_csv("Projeto_2/Project2_SampleData.csv")
 # Rede Fuzzy, input memory usage and processor load, output Load
 # Create a fuzzy system object
 FS_L = FuzzySystem()
@@ -170,24 +170,24 @@ FS_N.add_rules([ R_N1, R_N2, R_N3, R_N4, R_N5, R_N6, R_N7, R_N8, R_N9, R_N10, R_
 #Rede Final
 FS_F = FuzzySystem()
 
-G_1 = FuzzySet(function=Triangular_MF(a=0, b=0, c=0.25), term="very_low")
-G_2 = FuzzySet(function=Trapezoidal_MF(a=0, b=0.125, c=0.375, d=0.5), term="low")
-G_3 = FuzzySet(function=Trapezoidal_MF(a=0.25, b=0.375, c=0.625, d=0.75), term="normal")
+G_1 = FuzzySet(function=Triangular_MF(a=-1, b=-1, c=-0.5), term="very_low")
+G_2 = FuzzySet(function=Trapezoidal_MF(a=-1, b=-0.875, c=-0.625, d=-0.5), term="low")
+G_3 = FuzzySet(function=Trapezoidal_MF(a=-0.75, b=-0.625, c=0.625, d=0.75), term="normal")
 G_4 = FuzzySet(function=Trapezoidal_MF(a=0.5, b=0.625, c=0.925, d=1), term="high")
-G_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
-FS_F.add_linguistic_variable("Network", LinguisticVariable([G_1, G_2, G_3,G_4,G_5], concept="Network", universe_of_discourse=[0, 1]))
+G_5 = FuzzySet(function=Triangular_MF(a=0.5, b=1, c=1), term="very_high")
+FS_F.add_linguistic_variable("Network", LinguisticVariable([G_1, G_2, G_3,G_4,G_5], concept="Network", universe_of_discourse=[-1, 1]))
 
-H_1 = FuzzySet(function=Triangular_MF(a=0, b=0, c=0.25), term="very_low")
-H_2 = FuzzySet(function=Trapezoidal_MF(a=0, b=0.125, c=0.375, d=0.5), term="low")
-H_3 = FuzzySet(function=Trapezoidal_MF(a=0.25, b=0.375, c=0.625, d=0.75), term="normal")
+H_1 = FuzzySet(function=Triangular_MF(a=-1, b=-1, c=-0.5), term="very_low")
+H_2 = FuzzySet(function=Trapezoidal_MF(a=-1, b=-0.875, c=-0.625, d=-0.5), term="low")
+H_3 = FuzzySet(function=Trapezoidal_MF(a=-0.75, b=-0.625, c=0.625, d=0.75), term="normal")
 H_4 = FuzzySet(function=Trapezoidal_MF(a=0.5, b=0.625, c=0.925, d=1), term="high")
-H_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
-FS_F.add_linguistic_variable("Load", LinguisticVariable([H_1, H_2, H_3, H_4,H_5], concept="Load", universe_of_discourse=[0, 1]))
+H_5 = FuzzySet(function=Triangular_MF(a=0.5, b=1, c=1), term="very_high")
+FS_F.add_linguistic_variable("Load", LinguisticVariable([H_1, H_2, H_3, H_4,H_5], concept="Load", universe_of_discourse=[-1, 1]))
 
 # Define output fuzzy sets and linguistic variable
 J_1 = FuzzySet(function=Triangular_MF(a=-1, b=-1, c=-0.5), term="very_low")
-J_2 = FuzzySet(function=Trapezoidal_MF(a=0, b=0.125, c=0.375, d=0.5), term="low")
-J_3 = FuzzySet(function=Trapezoidal_MF(a=0.25, b=0.375, c=0.625, d=0.75), term="normal")
+J_2 = FuzzySet(function=Trapezoidal_MF(a=-1, b=-0.875, c=-0.625, d=-0.5), term="low")
+J_3 = FuzzySet(function=Trapezoidal_MF(a=-0.75, b=-0.625, c=0.625, d=0.75), term="normal")
 J_4 = FuzzySet(function=Trapezoidal_MF(a=0.5, b=0.625, c=0.925, d=1), term="high")
 J_5 = FuzzySet(function=Triangular_MF(a=0.5, b=1, c=1), term="very_high")
 FS_F.add_linguistic_variable("Result", LinguisticVariable([J_1, J_2, J_3,J_4,J_5], universe_of_discourse=[-1, 1]))
@@ -221,7 +221,7 @@ R_F24 = "IF (Network IS very_high) AND (Load IS very_high) THEN (Result IS very_
 R_F25 = "IF (Network IS very_high) AND (Load IS very_high) THEN (Result IS very_high)"
 FS_F.add_rules([ R_F1, R_F2, R_F3, R_F4, R_F5, R_F6, R_F7, R_F8, R_F9, R_F10, R_F11, R_F12, R_F13, R_F14, R_F15, R_F16, R_F17 ,R_F18, R_F19, R_F20, R_F21, R_F22, R_F23, R_F24, R_F25 ])
 # Set antecedents values
-n_teste = 9
+n_teste = 1
 FS_N.set_variable("Latency", df['Latency'][n_teste])
 FS_N.set_variable("Output", df['OutNetThroughput'][n_teste])
 
