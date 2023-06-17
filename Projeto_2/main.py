@@ -1,61 +1,16 @@
-import math
 import numpy as np
 import pandas as pd
-#import matplotlib.pyplot as plt
 import matplotlib.pylab as plt
-import sklearn.model_selection as sk
+
 from simpful import *
-from joblib import dump
-from sklearn import metrics
+
 from sklearn.neural_network import MLPRegressor
 
-
-def find_out(df, coluna, k):      # Funcao para detetar os outliners, retorna vetor com os index outliners
-    u = 0
-    v = 0
-    out = []            # Vetor com os index outliners
-    for i in range(0, len(df.index)):
-        u += df[coluna][i]     # Calculo da media
-    u = u/len(df.index)
-    for i in range(0, len(df.index)):
-        v += (df[coluna][i]-u)**2           # Calculo da somatoria da variancia
-    v = np.sqrt(v/len(df.index))             # Calculo final variancia
-    for i in range(0, len(df.index)):
-        if abs(df[coluna][i]-u) > k*v:
-            out.append(i)
-    return out
-
-
-def remove_out(df, coluna, k):     # Funcao para remover os outliners
-    out = find_out(df, coluna, k)
-    for i in out:
-        df = df.drop(i)
-    return df
-
-
-def previous_out(df, coluna, k):    # Funcao para substituir o outliner pelo valor anterior
-    out = find_out(df, coluna, k)
-    for i in out:
-        if i != 0:          
-            df[coluna][i] = df[coluna][i-1]
-        #else:
-         #   df[coluna][i] = df[coluna][i+1]
-    return df
-
-
-def interpolation_out(df,coluna,k):    # Funcao para substituir o outliner pelo valor interpolado
-    out = find_out(df,coluna,k)
-    for i in out:
-        if i < 1:
-            i = 1
-        elif i > len(df.index)-2:   
-            i = len(df.index)-2
-        df[coluna][i] = (df[coluna][i+1] + df[coluna][i-1])/2
-    return df
 
 
 #df = pd.read_csv("/Users/mac/Documents/GitHub/CI4Iot/Projeto_2/Project2_SampleData.csv")
 df = pd.read_csv("Projeto_2/Project2_SampleData.csv")
+
 # Rede Fuzzy, input memory usage and processor load, output Load
 # Create a fuzzy system object
 FS_L = FuzzySystem()
@@ -99,16 +54,16 @@ R_L10 = "IF (Memory IS low) AND (Processor IS very_high) THEN (Load IS normal)"
 R_L11 = "IF (Memory IS normal) AND (Processor IS very_low) THEN (Load IS high)"
 R_L12 = "IF (Memory IS normal) AND (Processor IS low) THEN (Load IS high)"
 R_L13 = "IF (Memory IS normal) AND (Processor IS normal) THEN (Load IS normal)"
-R_L14 = "IF (Memory IS normal) AND (Processor IS high) THEN (Load IS low)"
-R_L15 = "IF (Memory IS normal) AND (Processor IS very_high) THEN (Load IS low)"
+R_L14 = "IF (Memory IS normal) AND (Processor IS high) THEN (Load IS normal)"
+R_L15 = "IF (Memory IS normal) AND (Processor IS very_high) THEN (Load IS normal)"
 R_L16 = "IF (Memory IS high) AND (Processor IS very_low) THEN (Load IS high)"
 R_L17 = "IF (Memory IS high) AND (Processor IS low) THEN (Load IS high)"
-R_L18 = "IF (Memory IS high) AND (Processor IS normal) THEN (Load IS low)"
+R_L18 = "IF (Memory IS high) AND (Processor IS normal) THEN (Load IS normal)"
 R_L19 = "IF (Memory IS high) AND (Processor IS high) THEN (Load IS low)"
 R_L20 = "IF (Memory IS high) AND (Processor IS very_high) THEN (Load IS low)"
 R_L21 = "IF (Memory IS very_high) AND (Processor IS very_low) THEN (Load IS high)"
 R_L22 = "IF (Memory IS very_high) AND (Processor IS low) THEN (Load IS normal)"
-R_L23 = "IF (Memory IS very_high) AND (Processor IS normal) THEN (Load IS low)"
+R_L23 = "IF (Memory IS very_high) AND (Processor IS normal) THEN (Load IS normal)"
 R_L24 = "IF (Memory IS very_high) AND (Processor IS very_high) THEN (Load IS low)"
 R_L25 = "IF (Memory IS very_high) AND (Processor IS very_high) THEN (Load IS very_low)"
 FS_L.add_rules([ R_L1, R_L2, R_L3, R_L4, R_L5, R_L6, R_L7, R_L8, R_L9, R_L10, R_L11, R_L12, R_L13, R_L14, R_L15, R_L16, R_L17 ,R_L18, R_L19, R_L20, R_L21, R_L22, R_L23, R_L24, R_L25 ])
@@ -188,12 +143,12 @@ H_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
 FS_F.add_linguistic_variable("Load", LinguisticVariable([H_1, H_2, H_3, H_4,H_5], concept="Load", universe_of_discourse=[0, 1]))
 
 # Define output fuzzy sets and linguistic variable
-J_1 = FuzzySet(function=Triangular_MF(a=-1, b=-1, c=-0.5), term="very_low")
-J_2 = FuzzySet(function=Triangular_MF(a=-1, b=-0.5, c=0.0), term="low")
-J_3 = FuzzySet(function=Triangular_MF(a=-0.5, b=0.0, c=0.5), term="normal")
-J_4 = FuzzySet(function=Triangular_MF(a=0.0, b=0.5, c=1), term="high")
-J_5 = FuzzySet(function=Triangular_MF(a=0.5, b=1, c=1), term="very_high")
-FS_F.add_linguistic_variable("Result", LinguisticVariable([J_1, J_2, J_3,J_4,J_5], universe_of_discourse=[-1, 1]))
+J_1 = FuzzySet(function=Triangular_MF(a=-1, b=-0.8, c=0.35), term="very_low")
+J_2 = FuzzySet(function=Triangular_MF(a=-1, b=0.25, c=0.50), term="low")
+J_3 = FuzzySet(function=Triangular_MF(a=-0.85, b=0.90, c=0.95), term="normal")
+J_4 = FuzzySet(function=Triangular_MF(a=0.5, b=0.75, c=1), term="high")
+J_5 = FuzzySet(function=Triangular_MF(a=0.85, b=1, c=1), term="very_high")
+FS_F.add_linguistic_variable("Result", LinguisticVariable([J_1, J_2, J_3,J_4,J_5], universe_of_discourse=[0, 1]))
 
 # Define fuzzy rules
 
@@ -274,7 +229,6 @@ plt.tight_layout()
 xs = []
 ys = []
 zs = []
-DIVs = 20
 for x in np.linspace(0,1,DIVs):
     for y in np.linspace(0,1,DIVs):
         FS_L.set_variable("Memory", x)
@@ -304,7 +258,6 @@ plt.tight_layout()
 xs = []
 ys = []
 zs = []
-DIVs = 20
 for x in np.linspace(0,1,DIVs):
     for y in np.linspace(0,1,DIVs):
         FS_F.set_variable("Load", x)
