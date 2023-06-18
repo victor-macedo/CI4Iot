@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pylab as plt
 
 from simpful import *
-
 from sklearn.neural_network import MLPRegressor
 
 
@@ -21,8 +20,8 @@ S_2 = FuzzySet(function=Triangular_MF(a=0.0, b=0.25, c=0.5), term="low")
 S_3 = FuzzySet(function=Triangular_MF(a=0.25, b=0.5, c=0.75), term="normal")
 S_4 = FuzzySet(function=Triangular_MF(a=0.5, b=0.75, c=1), term="high")
 S_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
-L_LL =  LinguisticVariable([S_1, S_2, S_3,S_4,S_5], concept="Memory usage", universe_of_discourse=[0,1])
-FS_L.add_linguistic_variable("Memory",L_LL)
+S_LV =  LinguisticVariable([S_1, S_2, S_3,S_4,S_5], concept="Memory usage", universe_of_discourse=[0,1])
+FS_L.add_linguistic_variable("Memory",S_LV)
 #L_LL.plot()
 
 F_1 = FuzzySet(function=Triangular_MF(a=0, b=0, c=0.25), term="very_low")
@@ -30,7 +29,8 @@ F_2 = FuzzySet(function=Triangular_MF(a=0.0, b=0.25, c=0.5), term="low")
 F_3 = FuzzySet(function=Triangular_MF(a=0.25, b=0.5, c=0.75), term="normal")
 F_4 = FuzzySet(function=Triangular_MF(a=0.5, b=0.75, c=1), term="high")
 F_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
-FS_L.add_linguistic_variable("Processor", LinguisticVariable([F_1, F_2,F_3,F_4,F_5], concept="Processor load", universe_of_discourse=[0,1]))
+F_LV = LinguisticVariable([F_1, F_2,F_3,F_4,F_5], concept="Processor load", universe_of_discourse=[0,1])
+FS_L.add_linguistic_variable("Processor", F_LV)
 
 # Define output fuzzy sets and linguistic variable
 T_1 = FuzzySet(function=Triangular_MF(a=0, b=0, c=0.25), term="very_low")
@@ -38,7 +38,9 @@ T_2 = FuzzySet(function=Triangular_MF(a=0.0, b=0.25, c=0.5), term="low")
 T_3 = FuzzySet(function=Triangular_MF(a=0.25, b=0.5, c=0.75), term="normal")
 T_4 = FuzzySet(function=Triangular_MF(a=0.5, b=0.75, c=1), term="high")
 T_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
-FS_L.add_linguistic_variable("Load", LinguisticVariable([T_1, T_2, T_3, T_4, T_5], universe_of_discourse=[0,1]))
+T_LV = LinguisticVariable([T_1, T_2, T_3, T_4, T_5], universe_of_discourse=[0,1])
+FS_L.add_linguistic_variable("Load", T_LV)
+FS_L.produce_figure()
 
 # Define fuzzy rules
 R_L1 = "IF (Memory IS very_low) AND (Processor IS very_low) THEN (Load IS very_high)"
@@ -78,14 +80,16 @@ L_2 = FuzzySet(function=Triangular_MF(a=0.0, b=0.25, c=0.5), term="low")
 L_3 = FuzzySet(function=Triangular_MF(a=0.25, b=0.5, c=0.75), term="normal")
 L_4 = FuzzySet(function=Triangular_MF(a=0.5, b=0.75, c=1), term="high")
 L_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
-FS_N.add_linguistic_variable("Latency", LinguisticVariable([L_1, L_2, L_3,L_4,L_5], concept="Latency", universe_of_discourse=[0, 1]))
+L_LV = LinguisticVariable([L_1, L_2, L_3,L_4,L_5], concept="Latency", universe_of_discourse=[0, 1])
+FS_N.add_linguistic_variable("Latency", L_LV)
 
 O_1 = FuzzySet(function=Triangular_MF(a=0, b=0, c=0.25), term="very_low")
 O_2 = FuzzySet(function=Triangular_MF(a=0.0, b=0.25, c=0.5), term="low")
 O_3 = FuzzySet(function=Triangular_MF(a=0.25, b=0.5, c=0.75), term="normal")
 O_4 = FuzzySet(function=Triangular_MF(a=0.5, b=0.75, c=1), term="high")
 O_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
-FS_N.add_linguistic_variable("Output", LinguisticVariable([O_1, O_2, O_3,O_4,O_5], concept="Output Network Throughput", universe_of_discourse=[0, 1]))
+O_LV = LinguisticVariable([O_1, O_2, O_3,O_4,O_5], concept="Output Network Throughput", universe_of_discourse=[0, 1])
+FS_N.add_linguistic_variable("Output", O_LV)
 
 # Define output fuzzy sets and linguistic variable
 N_1 = FuzzySet(function=Triangular_MF(a=0, b=0, c=0.25), term="very_low")
@@ -93,8 +97,9 @@ N_2 = FuzzySet(function=Triangular_MF(a=0.0, b=0.25, c=0.5), term="low")
 N_3 = FuzzySet(function=Triangular_MF(a=0.25, b=0.5, c=0.75), term="normal")
 N_4 = FuzzySet(function=Triangular_MF(a=0.5, b=0.75, c=1), term="high")
 N_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
-FS_N.add_linguistic_variable("Network", LinguisticVariable([N_1, N_2, N_3, N_4, N_5], universe_of_discourse=[0, 1]))
-
+N_LV = LinguisticVariable([N_1, N_2, N_3, N_4, N_5], universe_of_discourse=[0, 1])
+FS_N.add_linguistic_variable("Network", N_LV)
+FS_N.produce_figure()
 # Define fuzzy rules
 
 R_N1 = "IF (Output IS very_low) AND (Latency IS very_low) THEN (Network IS normal)"
@@ -133,23 +138,26 @@ G_2 = FuzzySet(function=Triangular_MF(a=0.0, b=0.25, c=0.5), term="low")
 G_3 = FuzzySet(function=Triangular_MF(a=0.25, b=0.5, c=0.75), term="normal")
 G_4 = FuzzySet(function=Triangular_MF(a=0.5, b=0.75, c=1), term="high")
 G_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
-FS_F.add_linguistic_variable("Network", LinguisticVariable([G_1, G_2, G_3,G_4,G_5], concept="Network", universe_of_discourse=[0, 1]))
+G_LV = LinguisticVariable([G_1, G_2, G_3,G_4,G_5], concept="Network", universe_of_discourse=[0, 1])
+FS_F.add_linguistic_variable("Network", G_LV)
 
 H_1 = FuzzySet(function=Triangular_MF(a=0, b=0, c=0.25), term="very_low")
 H_2 = FuzzySet(function=Triangular_MF(a=0.0, b=0.25, c=0.5), term="low")
 H_3 = FuzzySet(function=Triangular_MF(a=0.25, b=0.5, c=0.75), term="normal")
 H_4 = FuzzySet(function=Triangular_MF(a=0.5, b=0.75, c=1), term="high")
 H_5 = FuzzySet(function=Triangular_MF(a=0.75, b=1, c=1), term="very_high")
-FS_F.add_linguistic_variable("Load", LinguisticVariable([H_1, H_2, H_3, H_4,H_5], concept="Load", universe_of_discourse=[0, 1]))
+H_LV = LinguisticVariable([H_1, H_2, H_3, H_4,H_5], concept="Load", universe_of_discourse=[0, 1])
+FS_F.add_linguistic_variable("Load", H_LV)
 
 # Define output fuzzy sets and linguistic variable
-J_1 = FuzzySet(function=Triangular_MF(a=-1, b=-0.8, c=0.35), term="very_low")
-J_2 = FuzzySet(function=Triangular_MF(a=-1, b=0.25, c=0.50), term="low")
-J_3 = FuzzySet(function=Triangular_MF(a=-0.85, b=0.90, c=0.95), term="normal")
-J_4 = FuzzySet(function=Triangular_MF(a=0.5, b=0.75, c=1), term="high")
-J_5 = FuzzySet(function=Triangular_MF(a=0.85, b=1, c=1), term="very_high")
-FS_F.add_linguistic_variable("Result", LinguisticVariable([J_1, J_2, J_3,J_4,J_5], universe_of_discourse=[0, 1]))
-
+J_1 = FuzzySet(function=Triangular_MF(a=-1, b=-1, c=-0.5), term="very_low")
+J_2 = FuzzySet(function=Triangular_MF(a=-1, b=-0.5, c=0.0), term="low")
+J_3 = FuzzySet(function=Triangular_MF(a=-0.5, b=0.0, c=0.5), term="normal")
+J_4 = FuzzySet(function=Triangular_MF(a=0.0, b=0.5, c=1), term="high")
+J_5 = FuzzySet(function=Triangular_MF(a=0.5, b=1, c=1), term="very_high")
+J_LV = LinguisticVariable([J_1, J_2, J_3,J_4,J_5], universe_of_discourse=[-1, 1])
+FS_F.add_linguistic_variable("Result", J_LV)
+FS_L.produce_figure()
 # Define fuzzy rules
 
 R_F1 = "IF (Network IS very_low) AND (Load IS very_low) THEN (Result IS normal)"
