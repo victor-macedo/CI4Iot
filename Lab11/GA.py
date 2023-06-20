@@ -85,7 +85,7 @@ def main():
     #       are crossed
     #
     # MUTPB is the probability for mutating an individual
-    CXPB, MUTPB = 0.5, 0.3
+    CXPB, MUTPB = 0.3, 0.1
 
     print("Start of evolution")
 
@@ -152,7 +152,7 @@ def main():
 
 if __name__ == "__main__":
     tempos = []
-    for i in range (1):
+    for i in range (20):
         start = time.time()
         main()
         end = time.time()

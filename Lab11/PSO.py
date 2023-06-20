@@ -1,5 +1,6 @@
 import operator
 import random
+import time
 
 import numpy as np
 import math
@@ -56,7 +57,7 @@ def main():
     logbook = tools.Logbook()
     logbook.header = ["gen", "evals"] + stats.fields
 
-    GEN = 1000
+    GEN = 100
     best = None
 
     for g in range(GEN):
@@ -73,10 +74,16 @@ def main():
 
         # Gather all the fitnesses in one list and print the stats
         logbook.record(gen=g, evals=len(pop), **stats.compile(pop))
-        print(logbook.stream)
+        #print(logbook.stream)
         print(best)
 
     return pop, logbook, best
 
 if __name__ == "__main__":
-    main()
+    tempos = []
+    for i in range (10):
+        start = time.time()
+        main()
+        end = time.time()
+        tempos.append(end-start)
+    print("Tempo de execução: ", sum(tempos)/len(tempos))
