@@ -190,9 +190,6 @@ for n_teste in range(len(df)):
     FS_F.set_variable("Network", float(FS_N.Mamdani_inference(["Network"])["Network"]))
     df["CLPVariation"][n_teste] =  FS_F.Mamdani_inference(["Result"])["Result"]
     df.to_csv("Projeto_2/Lab10-Proj2_TestS.csv")
-    print("Teste n°: ", n_teste )
-    print(FS_F.Mamdani_inference(["Result"]))
-    print("Resultado esperado: ", df['CLPVariation'][n_teste])
 
 
 

@@ -190,7 +190,7 @@ FS_F.add_rules([ R_F1, R_F2, R_F3, R_F4, R_F5, R_F6, R_F7, R_F8, R_F9, R_F10, R_
 
 for n_teste in range(10):
     FS_N.set_variable("Latency", df['Latency'][n_teste])
-    FS_N.set_variable("Output", df['OutBandwidth'][n_teste])
+    FS_N.set_variable("Output", df['OutNetThroughput'][n_teste])
 
     FS_L.set_variable("Memory", df['ProcessorLoad'][n_teste])
     FS_L.set_variable("Processor", df['MemoryUsage'][n_teste])
